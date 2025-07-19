@@ -1,83 +1,262 @@
 # DevOps Microservices Pipeline
 
-A complete DevOps pipeline for microservices using Docker, Kubernetes, Jenkins, and GitHub. This project demonstrates modern microservices architecture with automated CI/CD, containerization, orchestration, and monitoring.
+A comprehensive DevOps pipeline showcasing modern microservices architecture with containerization, orchestration, and automated deployment strategies. This project demonstrates production-ready practices for building, testing, and deploying distributed applications.
 
-## Project Structure
+## 🏗️ Project Architecture
 
 ```
-├── services/                    # Microservices
-│   ├── user-service/           # User management service
-│   └── order-service/          # Order management service
-├── shared/                     # Shared utilities and libraries
-│   └── utils/                  # Common utilities package
-├── .kiro/                      # Kiro specifications and configurations
-│   └── specs/                  # Feature specifications
-└── package.json                # Root package.json for workspace management
+├── services/                    # Microservices applications
+│   ├── user-service/           # User management API
+│   ├── order-service/          # Order processing API
+│   └── frontend/               # React web application
+├── shared/                     # Common utilities and libraries
+│   └── utils/                  # Shared utility functions
+├── k8s/                        # Kubernetes deployment manifests
+├── scripts/                    # Automation and deployment scripts
+└── docker-compose.yml          # Local development orchestration
 ```
 
-## Services
+## 🚀 Implementation Progress
 
-### User Service (Port 3001)
-- **Endpoints:**
-  - `GET /api/users` - Get all users
-  - `GET /api/users/:id` - Get user by ID
-  - `POST /api/users` - Create new user
-  - `PUT /api/users/:id` - Update user
-  - `DELETE /api/users/:id` - Delete user
-  - `GET /health` - Health check
-  - `GET /health/ready` - Readiness probe
-  - `GET /health/live` - Liveness probe
+<details>
+<summary><strong>✅ Phase 1: Application Development</strong></summary>
 
-### Order Service (Port 3002)
-- **Endpoints:**
-  - `GET /api/orders` - Get all orders (supports ?userId filter)
-  - `GET /api/orders/:id` - Get order by ID
-  - `POST /api/orders` - Create new order
-  - `PUT /api/orders/:id` - Update order status
-  - `DELETE /api/orders/:id` - Cancel order
-  - `GET /health` - Health check
-  - `GET /health/ready` - Readiness probe
-  - `GET /health/live` - Liveness probe
+### Microservices Architecture
+- **User Service** (Node.js + Express)
+  - RESTful API for user management
+  - CRUD operations with validation
+  - Health monitoring endpoints
+  - Unit and integration testing
+- **Order Service** (Node.js + Express)  
+  - Order processing and management
+  - Service-to-service communication
+  - Business logic validation
+  - Comprehensive test coverage
+- **Frontend Application** (React)
+  - Modern SPA with React Router
+  - API integration with backend services
+  - Responsive UI components
+  - State management with React Query
 
-## Getting Started
+### Shared Infrastructure
+- **Common Utilities Package**
+  - Centralized logging with Winston
+  - Input validation schemas
+  - Standardized response helpers
+  - Error handling middleware
+- **Testing Framework**
+  - Jest for unit testing
+  - Supertest for API testing
+  - Integration test suites
+  - Code coverage reporting
+
+</details>
+
+<details>
+<summary><strong>✅ Phase 2: Containerization & Build Pipeline</strong></summary>
+
+### Docker Implementation
+- **Multi-stage Dockerfiles**
+  - Optimized build processes
+  - Security best practices
+  - Non-root user implementation
+  - Health check integration
+- **Container Orchestration**
+  - Docker Compose for local development
+  - Service networking configuration
+  - Volume management
+  - Environment variable handling
+
+### Build Automation
+- **Image Building Scripts**
+  - Semantic versioning strategy
+  - Git commit hash tagging
+  - Automated build processes
+  - Cross-platform compatibility
+- **Security Scanning**
+  - Trivy vulnerability assessment
+  - Automated security reporting
+  - Build pipeline integration
+  - Critical vulnerability blocking
+- **Registry Management**
+  - Docker Hub integration
+  - Image tagging strategies
+  - Push automation scripts
+  - Multi-environment support
+
+</details>
+
+<details>
+<summary><strong>✅ Phase 3: Kubernetes Orchestration</strong></summary>
+
+### Container Orchestration
+- **Kubernetes Manifests**
+  - Deployment configurations
+  - Service definitions
+  - ConfigMap management
+  - Resource allocation
+- **High Availability Setup**
+  - Multi-replica deployments
+  - Load balancing configuration
+  - Health check probes
+  - Auto-restart policies
+- **Networking & Ingress**
+  - Service mesh configuration
+  - External traffic routing
+  - SSL/TLS termination
+  - Path-based routing
+
+### Scalability Features
+- **Horizontal Pod Autoscaling**
+  - CPU-based scaling policies
+  - Memory utilization monitoring
+  - Custom metrics integration
+  - Automatic scale-up/down
+- **Resource Management**
+  - CPU and memory limits
+  - Quality of Service classes
+  - Node affinity rules
+  - Resource quotas
+
+</details>
+
+<details>
+<summary><strong>🔄 Phase 4: CI/CD Pipeline (Planned)</strong></summary>
+
+### Continuous Integration
+- Jenkins pipeline configuration
+- Automated testing workflows
+- Code quality gates
+- Security scanning integration
+
+### Continuous Deployment
+- Multi-environment deployments
+- Blue-green deployment strategy
+- Rollback mechanisms
+- Deployment monitoring
+
+</details>
+
+<details>
+<summary><strong>🔄 Phase 5: Monitoring & Observability (Planned)</strong></summary>
+
+### Metrics & Monitoring
+- Prometheus metrics collection
+- Grafana dashboard setup
+- Alert manager configuration
+- Custom business metrics
+
+### Logging & Tracing
+- Centralized logging with ELK stack
+- Distributed tracing
+- Log aggregation and analysis
+- Performance monitoring
+
+</details>
+
+## 🛠️ Technology Stack
+
+### Backend Services
+- **Runtime**: Node.js 18+ with Express framework
+- **Testing**: Jest, Supertest for comprehensive testing
+- **Validation**: Joi for input validation
+- **Logging**: Winston for structured logging
+- **Security**: Helmet, CORS middleware
+
+### Frontend Application
+- **Framework**: React 18 with modern hooks
+- **Routing**: React Router for SPA navigation
+- **State Management**: React Query for server state
+- **HTTP Client**: Axios for API communication
+- **UI**: Custom CSS with responsive design
+
+### Infrastructure & DevOps
+- **Containerization**: Docker with multi-stage builds
+- **Orchestration**: Kubernetes with native manifests
+- **Security**: Trivy for vulnerability scanning
+- **Automation**: Bash scripts for deployment
+- **Development**: Docker Compose for local setup
+
+## 🚀 Quick Start Guide
 
 ### Prerequisites
-- Node.js >= 16.0.0
-- npm >= 8.0.0
+- Node.js 18+ and npm 8+
+- Docker and Docker Compose
+- kubectl and minikube (for Kubernetes deployment)
 
-### Installation
+### Local Development Setup
 
-1. Clone the repository
-2. Install dependencies:
+<details>
+<summary><strong>Option 1: Docker Compose (Recommended)</strong></summary>
+
 ```bash
-npm install
+# Clone and setup
+git clone <repository-url>
+cd microservices-devops-pipeline
+
+# Build and run all services
+docker-compose up --build
+
+# Access applications
+# Frontend: http://localhost:3000
+# User API: http://localhost:3001/api/users
+# Order API: http://localhost:3002/api/orders
 ```
 
-3. Install dependencies for all services:
+</details>
+
+<details>
+<summary><strong>Option 2: Native Development</strong></summary>
+
 ```bash
+# Install dependencies
 npm install --workspaces
+
+# Run services in separate terminals
+cd services/user-service && npm run dev     # Port 3001
+cd services/order-service && npm run dev    # Port 3002  
+cd frontend && npm start                     # Port 3000
 ```
 
-### Running Services
+</details>
 
-#### Development Mode
+### Docker Build Pipeline
+
+<details>
+<summary><strong>Build and Scan Images</strong></summary>
+
 ```bash
-# Run all services in development mode
-npm run dev
+# Build images with versioning
+./scripts/build-images.sh v1.0.0
 
-# Or run individual services
-cd services/user-service && npm run dev
-cd services/order-service && npm run dev
+# Security scanning
+./scripts/scan-images.sh
+
+# Push to registry (optional)
+./scripts/push-images.sh v1.0.0 docker.io your-username
 ```
 
-#### Production Mode
+</details>
+
+### Kubernetes Deployment
+
+<details>
+<summary><strong>Deploy to Kubernetes</strong></summary>
+
 ```bash
-# Build all services
-npm run build
+# Start local cluster
+minikube start
 
-# Start all services
-npm start
+# Deploy all services
+chmod +x scripts/deploy-k8s.sh
+./scripts/deploy-k8s.sh
+
+# Access via ingress
+echo "$(minikube ip) microservices.local" | sudo tee -a /etc/hosts
+# Visit: http://microservices.local
 ```
+
+</details>
 
 ### Testing
 

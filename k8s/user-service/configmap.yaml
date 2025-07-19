@@ -1,0 +1,11 @@
+# ConfigMap: Lưu trữ configuration cho User Service
+apiVersion: v1 # phien ban api cua k8s su dung
+kind: ConfigMap # loai cua doi tuong la ConfigMap 
+metadata: # thong tin metadata cua ConfigMap
+  name: user-service-config
+  namespace: microservices
+data:
+  # Environment variables cho User Service
+  NODE_ENV: "production"
+  PORT: "3001"
+  LOG_LEVEL: "info"

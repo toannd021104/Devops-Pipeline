@@ -1,0 +1,24 @@
+# ----------------------------------------
+# Service: LoadBalancer nội bộ cho User Service
+# ----------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service             # Tên của Service
+  namespace: microservices       # Namespace chứa Service
+  labels:
+    app: user-service            # Gắn label cho Service
+
+spec:
+  type: ClusterIP                # Loại service: chỉ truy cập được nội bộ trong cluster
+
+  ports:
+    - port: 3001                 # Port được expose ra ngoài Service
+      targetPort: 3001           # Port trong container mà Service sẽ forward đến
+      name: http                 # Đặt tên cổng (tiện cho việc monitor hoặc routing sau này)
+
+  selector:
+    app: user-service            # Service sẽ route đến các pods có label này
+
+# cluster IP: truy cập nội bộ trong cluster
+# nodePort: truy cập từ bên ngoài cluster 

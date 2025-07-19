@@ -1,0 +1,13 @@
+# ConfigMap: Lưu trữ configuration cho Order Service
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: order-service-config
+  namespace: microservices
+data:
+  # Environment variables cho Order Service
+  NODE_ENV: "production"
+  PORT: "3002"
+  LOG_LEVEL: "info"
+  # URL để gọi User Service (dùng service name)
+  USER_SERVICE_URL: "http://user-service:3001"

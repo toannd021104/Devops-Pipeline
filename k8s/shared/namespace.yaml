@@ -1,0 +1,7 @@
+# Namespace: Tạo không gian riêng cho project
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: microservices
+  labels:
+    environment: development

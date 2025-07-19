@@ -1,0 +1,67 @@
+# ----------------------------
+# Deployment: User Service
+# ----------------------------
+apiVersion: apps/v1           # Sử dụng API version của K8s cho Deployment
+kind: Deployment              # Định nghĩa loại resource là Deployment
+metadata:
+  name: user-service          # Tên của Deployment
+  namespace: microservices    # Namespace chứa service
+  labels:
+    app: user-service         # Nhãn dùng để định danh và chọn lọc pod
+
+spec:
+  replicas: 2                 # Số lượng bản sao (pods) để đảm bảo High Availability
+
+  selector:                   # Chọn các pods dựa trên label
+    matchLabels:
+      app: user-service
+
+  template:                   # Mẫu để tạo pod
+    metadata:
+      labels:
+        app: user-service     # Gắn label cho các pod mới tạo
+
+    spec:
+      containers:
+        - name: user-service                     # Tên container
+          image: microservices/user-service:latest  # Image từ registry
+          imagePullPolicy: IfNotPresent          # Kéo image nếu chưa có sẵn
+
+          ports:
+            - containerPort: 3001                # Container expose cổng 3001
+              name: http                         # Đặt tên cho cổng
+
+          envFrom:                               # Nạp biến môi trường từ ConfigMap
+            - configMapRef:
+                name: user-service-config
+
+          # -------------------------
+          # Health Check - Liveness
+          # -------------------------
+          livenessProbe:
+            httpGet:
+              path: /health                      # Endpoint kiểm tra
+              port: 3001
+            initialDelaySeconds: 30              # Delay 30s trước khi bắt đầu check
+            periodSeconds: 10                    # Kiểm tra mỗi 10s
+
+          # -------------------------
+          # Health Check - Readiness
+          # -------------------------
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 5               # Bắt đầu check readiness sau 5s
+            periodSeconds: 5                     # Kiểm tra mỗi 5s
+
+          # -------------------------
+          # Resource Quota
+          # -------------------------
+          resources:
+            requests:                            # Tài nguyên tối thiểu container cần
+              memory: "128Mi"
+              cpu: "100m"
+            limits:                              # Giới hạn tối đa container được sử dụng
+              memory: "256Mi"
+              cpu: "200m"
