@@ -1,0 +1,38 @@
+# Ingress: Route traffic từ bên ngoài vào services
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: microservices-ingress
+  namespace: microservices
+   
+spec:
+  rules:
+  - host: microservices.local  # Domain name (thêm vào /etc/hosts)
+    http:
+      paths:
+      # Route / đến frontend
+      - path: / # microservices.local/ -> frontend
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 3000
+      
+      # Route /api/users đến user-service
+      - path: /api/users
+        pathType: Prefix # microservices.local/api/users -> user-service
+        backend:
+          service:
+            name: user-service
+            port:
+              number: 3001
+      
+      # Route /api/orders đến order-service
+      - path: /api/orders # microservices.local/api/orders -> order-service
+        pathType: Prefix
+        backend:
+          service:
+            name: order-service
+            port:
+              number: 3002
