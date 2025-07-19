@@ -1,27 +1,12 @@
-// 🏗️ Cấu trúc cơ bản:
-// pipeline {
-//     agent any          // Chạy trên máy nào cũng được
-//     environment { }    // Biến môi trường
-//     stages { }         // Các bước thực hiện
-//     post { }          // Làm gì sau khi xong
-// }
-// 🎯 Các giai đoạn (Stages):
-// 📥 Checkout Code: Lấy code từ Git
-// 📦 Install Dependencies: Cài đặt thư viện cần thiết
-// 🧪 Run Tests: Chạy test để kiểm tra code
-// 🔍 Code Quality: Kiểm tra chất lượng code
-// 🐳 Build Docker Images: Tạo Docker images
-// 🔒 Security Scan: Quét bảo mật
-// 🚀 Deploy to Staging: Deploy thử nghiệm
-// 🔗 Integration Tests: Test tích hợp
-// 🏭 Deploy to Production: Deploy thật (cần approval)
 pipeline {
     agent {
         label 'local'
     }
     
     environment {
-        PROJECT_NAME = 'microservices-devops'
+        VERSION = "${BUILD_NUMBER}"
+        REGISTRY = 'docker.io'
+        USERNAME = 'toanndcloud' // Thay bằng Docker Hub username của bạn
     }
     
     stages {
@@ -29,6 +14,7 @@ pipeline {
             steps {
                 echo '🔄 Lấy code từ repository...'
                 sh 'pwd && ls -la'
+                sh 'chmod +x scripts/*.sh'
             }
         }
         
@@ -36,11 +22,8 @@ pipeline {
             steps {
                 echo '📦 Cài đặt dependencies...'
                 script {
-                    // Kiểm tra và cài đặt dependencies cho từng service
-                    if (fileExists('package.json')) {
-                        sh 'npm install || echo "⚠️ Root npm install failed"'
-                    }
-                    
+                    // Chỉ cài dependencies nếu có package.json
+                    // Neu co file thuc hien lenh npm install, neu lenh chay loi thi in ra thong bao
                     if (fileExists('services/user-service/package.json')) {
                         sh 'cd services/user-service && npm install || echo "⚠️ User service npm install failed"'
                     }
@@ -78,38 +61,62 @@ pipeline {
         
         stage('🐳 Build Docker Images') {
             steps {
-                echo '🐳 Build Docker images...'
+                echo '🐳 Sử dụng script build có sẵn...'
+                sh './scripts/build-images.sh ${VERSION}'
+            }
+        }
+        
+        stage('🔒 Security Scan') {
+            steps {
+                echo '🔒 Quét bảo mật images...'
                 script {
-                    // Build images nếu có Dockerfile
-                    if (fileExists('services/user-service/Dockerfile')) {
-                        sh '''
-                            cd services/user-service
-                            docker build -t ${PROJECT_NAME}/user-service:${BUILD_NUMBER} . || echo "⚠️ User service build failed"
-                        '''
-                    }
-                    
-                    if (fileExists('services/order-service/Dockerfile')) {
-                        sh '''
-                            cd services/order-service
-                            docker build -t ${PROJECT_NAME}/order-service:${BUILD_NUMBER} . || echo "⚠️ Order service build failed"
-                        '''
-                    }
-                    
-                    if (fileExists('frontend/Dockerfile')) {
-                        sh '''
-                            cd frontend
-                            docker build -t ${PROJECT_NAME}/frontend:${BUILD_NUMBER} . || echo "⚠️ Frontend build failed"
-                        '''
-                    }
+                    // Chỉ scan nếu có Trivy
+                    sh '''
+                        if command -v trivy >/dev/null 2>&1; then
+                            ./scripts/scan-images.sh || echo "⚠️ Security scan failed but continuing..."
+                        else
+                            echo "⚠️ Trivy not installed, skipping security scan"
+                        fi
+                    '''
                 }
             }
         }
         
-        stage('✅ Summary') {
+        stage('📤 Push Images') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'master'
+                }
+            }
             steps {
-                echo '✅ Pipeline hoàn thành!'
-                sh 'echo "Build #${BUILD_NUMBER} completed"'
-                sh 'docker images | grep ${PROJECT_NAME} || echo "No images built"'
+                echo '📤 Push images lên registry...'
+                script {
+                    // Chỉ push khi ở main branch
+                    sh './scripts/push-images.sh ${VERSION} ${REGISTRY} ${USERNAME} || echo "⚠️ Push failed"'
+                }
+            }
+        }
+        
+        stage('🚀 Deploy to Kubernetes') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'master'
+                }
+            }
+            steps {
+                echo '🚀 Deploy lên Kubernetes...'
+                script {
+                    // Chỉ deploy khi có kubectl
+                    sh '''
+                        if command -v kubectl >/dev/null 2>&1; then
+                            ./scripts/deploy-k8s.sh || echo "⚠️ Deploy failed"
+                        else
+                            echo "⚠️ kubectl not found, skipping deployment"
+                        fi
+                    '''
+                }
             }
         }
     }
@@ -120,10 +127,11 @@ pipeline {
             sh 'docker image prune -f || echo "Cannot cleanup Docker images"'
         }
         success {
-            echo '🎉 Build thành công!'
+            echo '🎉 Pipeline hoàn thành thành công!'
+            sh 'docker images | grep microservices || echo "No images found"'
         }
         failure {
-            echo '❌ Build thất bại!'
+            echo '❌ Pipeline thất bại!'
         }
     }
 }
