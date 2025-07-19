@@ -16,7 +16,9 @@
 // 🔗 Integration Tests: Test tích hợp
 // 🏭 Deploy to Production: Deploy thật (cần approval)
 pipeline {
-    agent any
+    agent {
+        label 'local'
+    }
     
     environment {
         PROJECT_NAME = 'microservices-devops'
