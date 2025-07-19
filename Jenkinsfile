@@ -105,10 +105,8 @@ pipeline {
         
         stage('📤 Push Images') {
             when {
-                anyOf {
-                    branch 'main'
-                    branch 'master'
-                    branch 'origin/master'
+                expression {
+                    env.GIT_BRANCH == 'origin/master'
                 }
             }
             steps {
@@ -122,10 +120,8 @@ pipeline {
         
         stage('🚀 Deploy to Kubernetes') {
             when {
-                anyOf {
-                    branch 'main'
-                    branch 'master'
-                    branch 'origin/master'
+                expression {
+                    env.GIT_BRANCH == 'origin/master'
                 }
             }
             steps {
