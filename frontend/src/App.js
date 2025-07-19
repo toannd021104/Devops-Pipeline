@@ -5,6 +5,8 @@ import Dashboard from './pages/Dashboard';
 import Users from './pages/Users';
 import Orders from './pages/Orders';
 
+console.log('Auto trigger test')
+
 function App() {
   return (
     <Layout>
@@ -16,5 +18,4 @@ function App() {
     </Layout>
   );
 }
-
 export default App;
