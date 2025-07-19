@@ -121,19 +121,28 @@ A comprehensive DevOps pipeline showcasing modern microservices architecture wit
 </details>
 
 <details>
-<summary><strong>🔄 Phase 4: CI/CD Pipeline (Planned)</strong></summary>
+<summary><strong>✅ Phase 4: Jenkins CI/CD Pipeline</strong></summary>
 
-### Continuous Integration
-- Jenkins pipeline configuration
-- Automated testing workflows
-- Code quality gates
-- Security scanning integration
+### Jenkins Setup
+- **Docker-based Jenkins** with local agent support
+- **Pipeline as Code** using Jenkinsfile
+- **Multi-stage pipeline** with parallel execution
+- **Branch-based deployment** (master branch only)
 
-### Continuous Deployment
-- Multi-environment deployments
-- Blue-green deployment strategy
-- Rollback mechanisms
-- Deployment monitoring
+### Pipeline Stages
+- **📥 Checkout**: Clone code from GitHub repository
+- **📦 Install Dependencies**: npm install for all services
+- **🧪 Run Tests**: Parallel testing for all microservices
+- **🐳 Build Images**: Smart building based on code changes
+- **🔒 Security Scan**: Trivy vulnerability scanning
+- **📤 Push Images**: Docker Hub registry integration
+- **🚀 Deploy**: Kubernetes deployment automation
+
+### Automation Features
+- **Auto-trigger** on code changes (Poll SCM)
+- **Smart building** - only build when code changes
+- **Script integration** - uses existing build/deploy scripts
+- **Error handling** - continues pipeline on non-critical failures
 
 </details>
 
@@ -235,6 +244,61 @@ cd frontend && npm start                     # Port 3000
 # Push to registry (optional)
 ./scripts/push-images.sh v1.0.0 docker.io your-username
 ```
+
+</details>
+
+### Jenkins CI/CD Pipeline
+
+<details>
+<summary><strong>🚀 Setup Jenkins (3 steps)</strong></summary>
+
+```bash
+# 1. Start Jenkins with Docker
+cd jenkins
+chmod +x jenkins-setup.sh
+./jenkins-setup.sh
+
+# 2. Access Jenkins Web UI
+# URL: http://localhost:8080
+# Password: Copy from terminal output
+
+# 3. Create Pipeline Job
+# - New Item → Pipeline
+# - Name: devops-pipeline-github
+# - Definition: Pipeline script from SCM
+# - Repository: https://github.com/toannd021104/Devops-Pipeline
+# - Script Path: Jenkinsfile.simple
+```
+
+</details>
+
+<details>
+<summary><strong>🔄 Pipeline Stages</strong></summary>
+
+The Jenkins pipeline automatically:
+
+1. **📥 Checkout** - Clone code from GitHub
+2. **📦 Install Dependencies** - npm install for all services  
+3. **🧪 Run Tests** - Parallel testing (user-service, order-service, frontend)
+4. **🐳 Build Images** - Smart Docker builds (only when code changes)
+5. **🔒 Security Scan** - Trivy vulnerability scanning
+6. **📤 Push Images** - Docker Hub (master branch only)
+7. **🚀 Deploy** - Kubernetes deployment (master branch only)
+
+**Auto-trigger**: Pipeline runs automatically every 2 minutes when code changes detected.
+
+</details>
+
+<details>
+<summary><strong>🛠️ Jenkins Features</strong></summary>
+
+- **Smart Building**: Only builds services with code changes
+- **Branch Protection**: Push/Deploy only on master branch
+- **Script Integration**: Uses existing `scripts/` for build/deploy
+- **Error Handling**: Continues pipeline on non-critical failures
+- **Local Agent**: Runs on your machine (has Node.js, Docker, kubectl)
+
+**View Pipeline**: Jenkins Dashboard → devops-pipeline-github → Build History
 
 </details>
 
@@ -362,67 +426,3 @@ The `shared/utils` package provides common functionality:
 - **Validators**: Common validation schemas and functions
 - **Response Helpers**: Standardized API response formats
 - **Error Handlers**: Custom error classes and global error handling
-
-## Testing Strategy
-
-### Unit Tests
-- Test individual functions and components
-- Mock external dependencies
-- Focus on business logic validation
-
-### Integration Tests
-- Test complete API workflows
-- Test service interactions
-- Validate end-to-end functionality
-
-### Test Coverage
-- Aim for >80% code coverage
-- Include edge cases and error scenarios
-- Test both success and failure paths
-
-## Development Workflow
-
-1. **Feature Development**: Create feature branches from main
-2. **Testing**: Write unit and integration tests
-3. **Code Quality**: Run linting and fix issues
-4. **Pull Request**: Create PR with tests and documentation
-5. **Review**: Code review and approval process
-6. **Merge**: Merge to main branch
-7. **Deployment**: Automated deployment via CI/CD pipeline
-
-## Architecture Principles
-
-- **Microservices**: Each service has a single responsibility
-- **API-First**: RESTful APIs with consistent response formats
-- **Health Checks**: Comprehensive health monitoring
-- **Error Handling**: Graceful error handling and logging
-- **Validation**: Input validation and sanitization
-- **Security**: Security best practices and middleware
-- **Testing**: Comprehensive test coverage
-- **Documentation**: Clear API documentation and examples
-
-## Next Steps
-
-This project serves as the foundation for implementing:
-
-1. **Docker Containerization** - Multi-stage Dockerfiles
-2. **Kubernetes Deployment** - Helm charts and manifests
-3. **CI/CD Pipeline** - Jenkins automation
-4. **Monitoring Stack** - Prometheus and Grafana
-5. **Logging Stack** - ELK stack implementation
-6. **Security Scanning** - Container and dependency scanning
-7. **Database Integration** - PostgreSQL and Redis
-8. **Service Mesh** - Istio for advanced traffic management
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Ensure all tests pass
-6. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
