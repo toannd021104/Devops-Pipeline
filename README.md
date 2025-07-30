@@ -285,7 +285,9 @@ The Jenkins pipeline automatically:
 6. **📤 Push Images** - Docker Hub (master branch only)
 7. **🚀 Deploy** - Kubernetes deployment (master branch only)
 
-**Auto-trigger**: Pipeline runs automatically every 2 minutes when code changes detected.
+**Auto-trigger Options**:
+- **Poll SCM**: Checks GitHub every 2 minutes for changes
+- **GitHub Webhooks**: Instant trigger when code is pushed (requires public IP/ngrok)
 
 </details>
 
